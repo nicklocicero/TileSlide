@@ -24,6 +24,7 @@ public class FrameAdapter extends ArrayAdapter<Tile> {
   private int size;
   private Bitmap[] tileImages;
   private Bitmap noTileImage;
+  private Bitmap tileImage;
   private Frame frame;
   private Tile[] tiles;
 
@@ -45,10 +46,12 @@ public class FrameAdapter extends ArrayAdapter<Tile> {
     }
     Tile tile = getItem(position);
     TileView tileView = convertView.findViewById(R.id.tile_image);
-    Animation animation = AnimationUtils.loadAnimation(getContext(),R.anim.grid_item_anim);
-    tileView.setAnimation(animation);
+//    Animation animation = AnimationUtils.loadAnimation(getContext(),R.anim.grid_item_anim);
+//    tileView.setAnimation(animation);
     if (tile != null) {
       tileView.setImageBitmap(tileImages[tile.getNumber()]);
+    } else if (frame.isWin()) {
+      tileView.setImageBitmap(tileImage);
     } else {
       tileView.setImageBitmap(noTileImage);
     }
@@ -60,7 +63,6 @@ public class FrameAdapter extends ArrayAdapter<Tile> {
     copyModelTiles();
     setNotifyOnChange(false);
     // TODO Possibly modify this if we want to add animation.
-
     clear();
     addAll(tiles);
     super.notifyDataSetChanged();
@@ -89,10 +91,9 @@ public class FrameAdapter extends ArrayAdapter<Tile> {
           imageWidth / size,
           imageHeight / size);
     }
+    tileImage = Bitmap.createBitmap(tileImages[tileImages.length - 1]);
     noTileImage = Bitmap.createBitmap(tileImages[tileImages.length - 1]);
     noTileImage.eraseColor(ContextCompat.getColor(getContext(), R.color.puzzleBackground));
   }
-
-
 
 }

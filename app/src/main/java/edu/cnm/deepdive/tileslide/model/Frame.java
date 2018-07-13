@@ -1,5 +1,8 @@
 package edu.cnm.deepdive.tileslide.model;
 
+import android.util.Log;
+import android.widget.Toast;
+import java.util.Arrays;
 import java.util.Random;
 
 public class Frame {
@@ -9,6 +12,11 @@ public class Frame {
   private Tile[][] start;
   private Tile[][] tiles;
   private int moves;
+  private boolean win = false;
+
+  public boolean getWin() {
+    return win;
+  }
 
   public Frame(int size, Random rng) {
     this.size = size;
@@ -19,12 +27,30 @@ public class Frame {
       tiles[i / size][i % size] = new Tile(i);
     }
     tiles[size - 1][size - 1] = null;
+    start[size-1][size-1] = null;
     scramble();
   }
 
   public void reset() {
     copy(start, tiles);
     moves = 0;
+  }
+
+  public boolean isWin() {
+    int previous = -1;
+    for (Tile[] tile : tiles) {
+      for (Tile tile1: tile) {
+        if (tile1 == null) {
+          previous++;
+          continue;
+        }
+        if (previous >= tile1.getNumber()) {
+          return false;
+        }
+        previous++;
+      }
+    }
+    return true;
   }
 
   public void scramble() {
@@ -52,15 +78,16 @@ public class Frame {
   }
 
   private boolean move(int fromRow, int fromCol, int toRow, int toCol) {
-    if (
-        tiles[fromRow][fromCol] != null
-        && toRow >= 0
-        && toRow < size
-        && toCol >= 0
-        && toCol < size
-        && tiles[toRow][toCol] == null
-    ) {
+    if (!win &&
+          tiles[fromRow][fromCol] != null
+              && toRow >= 0
+              && toRow < size
+              && toCol >= 0
+              && toCol < size
+              && tiles[toRow][toCol] == null
+      ) {
       swap(tiles, fromRow, fromCol, toRow, toCol);
+      win = isWin();
       return true;
     }
     return false;
@@ -87,16 +114,17 @@ public class Frame {
   }
 
   private void shuffle() {
-    for (int toPosition = size * size - 1; toPosition >= 0; toPosition--) {
-      int toRow = toPosition / size;
-      int toCol = toPosition % size;
-      int fromPosition = rng.nextInt(toPosition + 1);
-      if (fromPosition != toPosition) {
-        int fromRow = fromPosition / size;
-        int fromCol = fromPosition % size;
-        swap(tiles, fromRow, fromCol, toRow, toCol);
-      }
-    }
+//    for (int toPosition = size * size - 1; toPosition >= 0; toPosition--) {
+//      int toRow = toPosition / size;
+//      int toCol = toPosition % size;
+//      int fromPosition = rng.nextInt(toPosition + 1);
+//      if (fromPosition != toPosition) {
+//        int fromRow = fromPosition / size;
+//        int fromCol = fromPosition % size;
+//        swap(tiles, fromRow, fromCol, toRow, toCol);
+//      }
+//    }
+    swap(tiles, 2, 1, 2, 2);
   }
 
   private boolean isParityEven() {

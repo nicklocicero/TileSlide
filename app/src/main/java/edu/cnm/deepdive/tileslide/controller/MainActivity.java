@@ -8,6 +8,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.Toast;
 import edu.cnm.deepdive.tileslide.R;
 import edu.cnm.deepdive.tileslide.View.FrameAdapter;
 import edu.cnm.deepdive.tileslide.model.Frame;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
   private FrameAdapter adapter;
   private GridView tileGrid;
   private Button reset;
+  private Toast toast;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     tileGrid.setNumColumns(PUZZLE_SIZE);
     tileGrid.setOnItemClickListener(this);
     reset = findViewById(R.id.reset);
+    toast = new Toast(this);
     createPuzzle();
     reset.setOnClickListener(new OnClickListener() {
       @Override
@@ -41,8 +44,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
   @Override
   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-    frame.move(position / PUZZLE_SIZE, position % PUZZLE_SIZE);
-    adapter.notifyDataSetChanged();
+    if (frame.getWin()) {
+      Toast.makeText(this, "You already won.", Toast.LENGTH_SHORT).show();
+    } else {
+      frame.move(position / PUZZLE_SIZE, position % PUZZLE_SIZE);
+      adapter.notifyDataSetChanged();
+      if (frame.getWin()) {
+        Toast.makeText(this, "You won!", Toast.LENGTH_SHORT).show();
+      }
+    }
   }
 
   private void createPuzzle() {
