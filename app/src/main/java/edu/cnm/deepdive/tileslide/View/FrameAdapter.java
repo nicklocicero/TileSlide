@@ -77,7 +77,8 @@ public class FrameAdapter extends ArrayAdapter<Tile> {
   }
 
   private void sliceBitmap() {
-    Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.android_robot_circle);
+    Drawable drawable = size == 3 ? ContextCompat.getDrawable(getContext(), R.drawable.android_robot_circle) :
+                                           ContextCompat.getDrawable(getContext(), R.drawable.lavendar);
     Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
     tileImages = new Bitmap[size * size];
     int imageWidth = bitmap.getWidth();
@@ -95,5 +96,10 @@ public class FrameAdapter extends ArrayAdapter<Tile> {
     noTileImage = Bitmap.createBitmap(tileImages[tileImages.length - 1]);
     noTileImage.eraseColor(ContextCompat.getColor(getContext(), R.color.puzzleBackground));
   }
+
+  public Tile[] getTiles() {
+    return tiles;
+  }
+
 
 }

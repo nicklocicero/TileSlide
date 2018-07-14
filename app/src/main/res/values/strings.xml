@@ -1,6 +1,6 @@
 <resources>
   <string name="app_name">Tile Slide</string>
-  <string name="reset">reset</string>
+  <string name="new_game">New Game</string>
   <string name="win_toast">You won!</string>
   <string name="won_already_toast">You already won.</string>
 </resources>

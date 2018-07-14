@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
 
-  private static int PUZZLE_SIZE = 3;
+  private static int PUZZLE_SIZE = 4;
 
   private Frame frame;
   private FrameAdapter adapter;
@@ -33,7 +33,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     tileGrid.setOnItemClickListener(this);
     reset = findViewById(R.id.reset);
     toast = new Toast(this);
-    createPuzzle();
+    if (savedInstanceState != null) {
+      createPuzzle();
+      frame.setTilesOrder(savedInstanceState.getIntArray("tilesOrder"));
+      adapter.notifyDataSetChanged();
+    } else {
+      createPuzzle();
+    }
     reset.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -59,5 +65,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     frame = new Frame(PUZZLE_SIZE, new Random());
     adapter = new FrameAdapter(this, frame);
     tileGrid.setAdapter(adapter);
+  }
+
+  @Override
+  public void onStart() {
+    super.onStart();
+  }
+  @Override
+  public void onResume() {
+    super.onResume();
+  }
+  @Override
+  public void onPause() {
+    super.onPause();
+  }
+
+  @Override
+  public void onSaveInstanceState(Bundle savedInstanceState) {
+    super.onSaveInstanceState(savedInstanceState);
+    savedInstanceState.putIntArray("tilesOrder", frame.getTilesOrder());
+  }
+
+  @Override
+  public void onStop() {
+    super.onStop();
+  }
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
   }
 }
