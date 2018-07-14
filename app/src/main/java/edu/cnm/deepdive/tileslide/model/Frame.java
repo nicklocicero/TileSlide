@@ -1,14 +1,8 @@
 package edu.cnm.deepdive.tileslide.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.util.Log;
-import android.widget.Toast;
-import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Random;
 
-public class Frame implements Serializable {
+public class Frame {
 
   private int size;
   private Random rng;
@@ -17,6 +11,7 @@ public class Frame implements Serializable {
   private int moves;
   private boolean win = false;
   private int[] tilesOrder;
+  private int[] startOrder;
 
   public boolean getWin() {
     return win;
@@ -33,6 +28,7 @@ public class Frame implements Serializable {
     tiles[size - 1][size - 1] = null;
     start[size-1][size-1] = null;
     tilesOrder = new int[size * size];
+    startOrder = new int[size * size];
     scramble();
   }
 
@@ -185,29 +181,48 @@ public class Frame implements Serializable {
   }
 
   public int[] getTilesOrder() {
+    return getOrder(tiles, tilesOrder);
+  }
+
+  public void setTilesOrder(int[] order) {
+    setOrder(tiles, order);
+  }
+
+  public int[] getStartOrder() {
+    return getOrder(start, startOrder);
+  }
+
+  public void setStartOrder(int[] order) {
+    setOrder(start, order);
+  }
+
+  private int[] getOrder(Tile[][] tiles, int[] order) {
     int count = 0;
     for (Tile[] tile : tiles) {
       for (Tile tile1 : tile) {
         if (tile1 == null) {
-          tilesOrder[count] = size * size - 1;
+          order[count] = size * size - 1;
         } else {
-          tilesOrder[count] = tile1.getNumber();
+          order[count] = tile1.getNumber();
         }
         count++;
       }
     }
-    return tilesOrder;
+    return order;
   }
 
-  public void setTilesOrder(int[] tilesOrder) {
-    Tile tile = new Tile(1);
-    for (int i = 0; i < tilesOrder.length; i++) {
-      if (tilesOrder[i] == size * size - 1) {
+  public void setOrder(Tile[][] tiles, int[] order) {
+    for (int i = 0; i < order.length; i++) {
+      if (order[i] == size * size - 1) {
         tiles[i / size][i % size] = null;
       } else {
-        tiles[i / size][i % size] = new Tile(tilesOrder[i]);
+        tiles[i / size][i % size] = new Tile(order[i]);
       }
     }
+  }
+
+  public void setMoves(int moves) {
+    this.moves = moves;
   }
 
 }

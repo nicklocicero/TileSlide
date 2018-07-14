@@ -2,7 +2,6 @@ package edu.cnm.deepdive.tileslide.controller;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -22,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
   private FrameAdapter adapter;
   private GridView tileGrid;
   private Button reset;
+  private Button newGame;
   private Toast toast;
 
   @Override
@@ -31,16 +31,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     tileGrid = findViewById(R.id.tile_grid);
     tileGrid.setNumColumns(PUZZLE_SIZE);
     tileGrid.setOnItemClickListener(this);
-    reset = findViewById(R.id.reset);
+    newGame = findViewById(R.id.new_game);
+    reset = findViewById(R.id.reset_game);
     toast = new Toast(this);
     if (savedInstanceState != null) {
       createPuzzle();
       frame.setTilesOrder(savedInstanceState.getIntArray("tilesOrder"));
+      frame.setStartOrder(savedInstanceState.getIntArray("startOrder"));
+      frame.setMoves(savedInstanceState.getInt("moves"));
       adapter.notifyDataSetChanged();
     } else {
       createPuzzle();
     }
     reset.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        frame.reset();
+        adapter.notifyDataSetChanged();
+      }
+    });
+    newGame.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
         createPuzzle();
@@ -68,30 +78,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
   }
 
   @Override
-  public void onStart() {
-    super.onStart();
-  }
-  @Override
-  public void onResume() {
-    super.onResume();
-  }
-  @Override
-  public void onPause() {
-    super.onPause();
-  }
-
-  @Override
   public void onSaveInstanceState(Bundle savedInstanceState) {
     super.onSaveInstanceState(savedInstanceState);
     savedInstanceState.putIntArray("tilesOrder", frame.getTilesOrder());
-  }
-
-  @Override
-  public void onStop() {
-    super.onStop();
-  }
-  @Override
-  public void onDestroy() {
-    super.onDestroy();
+    savedInstanceState.putIntArray("startOrder", frame.getStartOrder());
+    savedInstanceState.putInt("moves", frame.getMoves());
   }
 }
