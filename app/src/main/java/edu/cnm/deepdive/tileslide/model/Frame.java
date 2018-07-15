@@ -2,6 +2,7 @@ package edu.cnm.deepdive.tileslide.model;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -17,10 +18,16 @@ public class Frame {
   private boolean win = false;
   private int[] tilesOrder;
   private int[] startOrder;
-  private String[] path;
+  private List<Integer[]> path = new ArrayList<>();
   private int distance;
+  private int lastMove;
 
-  private static final String[] DIRECTIONS = {"left", "right", "up", "down"};
+  private static final Map<String, String> DIRECTIONS = new HashMap(){{
+      put("LEFT", "left");
+      put("RIGHT", "right");
+      put("UP", "up");
+      put("DOWN", "down");
+  }};
 
   public boolean getWin() {
     return win;
@@ -78,6 +85,34 @@ public class Frame {
 
   public int getMoves() {
     return moves;
+  }
+
+  private int[] getBlankSpacePosition() {
+    for (int i = 0; i < size; i++) {
+      for (int j = 0; j < size; j++) {
+        if (tiles[i][j] == null) {
+          return new int[] {i, j};
+        }
+      }
+    }
+    return new int[] {0, 0};
+  };
+
+  private boolean isMove (int row, int col) {
+    return isMove(row, col, row - 1, col)
+        || isMove(row, col, row, col + 1)
+        || isMove(row, col, row + 1, col)
+        || isMove(row, col, row, col - 1);
+  }
+
+  private boolean isMove(int fromRow, int fromCol, int toRow, int toCol) {
+    return !win &&
+        tiles[fromRow][fromCol] != null
+        && toRow >= 0
+        && toRow < size
+        && toCol >= 0
+        && toCol < size
+        && tiles[toRow][toCol] == null;
   }
 
   public boolean move(int row, int col) {
@@ -236,14 +271,110 @@ public class Frame {
 
   public void solve() {
     PriorityQueue<Frame> states = new PriorityQueue<>(getDistance());
-    List<String> path = new ArrayList<>();
     states.add(this);
     while (states.size() > 0) {
       Frame state = states.poll();
       if (state.isWin()) {
-        return state.getPath();
+        this.setPath(state.getPath());
+        break;
+      }
+      List<Frame> children = state.visit();
+      for (int i = 0; i < children.size(); i++) {
+        Frame child = children.get(i);
+        var f = child.g() + child.h();
+        states.push({puzzle : child, distance: f});
       }
     }
+  }
+
+  private List<Frame> visit() {
+    List<Frame> children = new ArrayList<>();
+    List<Integer[]> allowedMoves = getAllowedMoves();
+    for (int i = 0; i < allowedMoves.size(); i++)  {
+      Integer[] move = allowedMoves.get(i);
+      if (tiles[move[0]][move[1]].getNumber() != lastMove) {
+        Frame newInstance = new Frame(size, new Random());
+        newInstance.setTilesOrder(this.getTilesOrder());
+        newInstance.setStartOrder(this.getStartOrder());
+        newInstance.setMoves(this.getMoves());
+        newInstance.move(move[0], move[1]);
+        newInstance.addToPath(new Integer[] {move[0], move[1]});
+        children.add(newInstance);
+      }
+    }
+    return children;
+  };
+
+  private List<Integer[]> getAllowedMoves() {
+    List<Integer[]> allowedMoves = new ArrayList<>();
+    for (int i = 0; i < size; i++) {
+      for (int j = 0; j < size; j++) {
+        String move = getMove(i, j);
+        if (!move.equals("")) {
+          allowedMoves.add(new Integer[] {i, j});
+        }
+      }
+    }
+    return allowedMoves;
+  };
+
+  private String getMove (int row, int col) {
+    int[] blankSpacePosition = getBlankSpacePosition();
+    int blankRow = blankSpacePosition[0];
+    int blankCol = blankSpacePosition[1];
+    if (blankRow > 0 && row == blankRow - 1 && col == blankCol) {
+      return DIRECTIONS.get("DOWN");
+    } else if (blankRow < size - 1 && row == blankRow + 1 && col == blankCol) {
+      return DIRECTIONS.get("UP");
+    } else if (blankCol > 0 && row == blankRow - 1 && col == blankCol - 1) {
+      return DIRECTIONS.get("RIGHT");
+    } else if (blankRow < size - 1 && row == blankRow - 1 && col == blankCol + 1) {
+      return DIRECTIONS.get("LEFT");
+    }
+    return "";
+  }
+
+  private String move(int row, int col, boolean use) {
+    String move = getMove(row, col);
+    if (!move.equals("")) {
+      int[] blankSpacePosition = getBlankSpacePosition();
+      int blankRow = blankSpacePosition[0];
+      int blankCol = blankSpacePosition[1];
+      switch (move) {
+        case "left":
+          this.swap(tiles, blankRow, blankCol, blankRow, blankCol + 1);
+          break;
+        case "right":
+          this.swap(tiles, blankRow, blankCol, blankRow, blankCol - 1);
+          break;
+        case "up":
+          this.swap(tiles, blankRow, blankCol, blankRow + 1, blankCol);
+          break;
+        case "down":
+          this.swap(tiles, blankRow, blankCol, blankRow - 1, blankCol - 1);
+          break;
+      }
+      if (!move.equals("")) {
+        lastMove = tiles[row][col].getNumber();
+      }
+    }
+    return move;
+  }
+
+  private boolean move(int fromRow, int fromCol, int toRow, int toCol, boolean use) {
+    if (!win &&
+        tiles[fromRow][fromCol] != null
+        && toRow >= 0
+        && toRow < size
+        && toCol >= 0
+        && toCol < size
+        && tiles[toRow][toCol] == null
+        ) {
+      swap(tiles, fromRow, fromCol, toRow, toCol);
+      win = isWin();
+      return true;
+    }
+    return false;
   }
 
   public int getDistance() {
@@ -254,7 +385,19 @@ public class Frame {
     this.distance = distance;
   }
 
-//  public class FrameComparator implements Comparator<Frame> {
+  public List<Integer[]> getPath() {
+    return path;
+  }
+
+  public void setPath(List<Integer[]> path) {
+    this.path = path;
+  }
+
+  public void addToPath(Integer[] direction) {
+    this.path.add(direction);
+  }
+
+  //  public class FrameComparator implements Comparator<Frame> {
 //
 //    public int compare( Frame x, Frame y ) {
 //      return x.getDistance() - y.getDistance();
