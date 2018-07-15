@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Random;
 
-public class Frame {
+public class Frame implements Comparable<Frame> {
 
   private int size;
   private Random rng;
@@ -159,16 +159,17 @@ public class Frame {
   }
 
   private void shuffle() {
-    for (int toPosition = size * size - 1; toPosition >= 0; toPosition--) {
-      int toRow = toPosition / size;
-      int toCol = toPosition % size;
-      int fromPosition = rng.nextInt(toPosition + 1);
-      if (fromPosition != toPosition) {
-        int fromRow = fromPosition / size;
-        int fromCol = fromPosition % size;
-        swap(tiles, fromRow, fromCol, toRow, toCol);
-      }
-    }
+//    for (int toPosition = size * size - 1; toPosition >= 0; toPosition--) {
+//      int toRow = toPosition / size;
+//      int toCol = toPosition % size;
+//      int fromPosition = rng.nextInt(toPosition + 1);
+//      if (fromPosition != toPosition) {
+//        int fromRow = fromPosition / size;
+//        int fromCol = fromPosition % size;
+//        swap(tiles, fromRow, fromCol, toRow, toCol);
+//      }
+//    }
+    swap(tiles, 3, 3, 3, 2);
   }
 
   private boolean isParityEven() {
@@ -270,21 +271,39 @@ public class Frame {
   }
 
   public void solve() {
-    PriorityQueue<Frame> states = new PriorityQueue<>(getDistance());
+    PriorityQueue<Frame> states = new PriorityQueue<>();
     states.add(this);
     while (states.size() > 0) {
       Frame state = states.poll();
       if (state.isWin()) {
-        this.setPath(state.getPath());
+        setPath(state.getPath());
         break;
       }
       List<Frame> children = state.visit();
       for (int i = 0; i < children.size(); i++) {
         Frame child = children.get(i);
-        var f = child.g() + child.h();
-        states.push({puzzle : child, distance: f});
+        int f = child.g() + child.h();
+        child.setDistance(f);
+        states.add(child);
       }
     }
+  }
+
+  private int g() {
+    return this.path.size();
+  }
+
+  private int h() {
+      int count = 0;
+      for (int i = 0; i < size * size; i++) {
+        if (tiles[i / size][i % size] != null) {
+          int tileNo = tiles[i / size][i % size].getNumber();
+          if (tileNo == i) {
+            count++;
+          }
+        }
+      }
+      return count;
   }
 
   private List<Frame> visit() {
@@ -395,6 +414,11 @@ public class Frame {
 
   public void addToPath(Integer[] direction) {
     this.path.add(direction);
+  }
+
+  @Override
+  public int compareTo(Frame otherFrame) {
+    return otherFrame.getDistance() - getDistance();
   }
 
   //  public class FrameComparator implements Comparator<Frame> {

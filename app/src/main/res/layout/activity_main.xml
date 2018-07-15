@@ -43,6 +43,16 @@
     android:layout_marginEnd="8dp"
     android:text="@string/new_game"
     app:layout_constraintLeft_toRightOf="@+id/reset_game"
+    app:layout_constraintRight_toLeftOf="@+id/solve"
+    app:layout_constraintTop_toBottomOf="@id/tile_grid"/>
+  <Button
+    android:id="@+id/solve"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
+    android:text="@string/solve"
+    app:layout_constraintLeft_toRightOf="@+id/new_game"
     app:layout_constraintRight_toRightOf="parent"
     app:layout_constraintTop_toBottomOf="@id/tile_grid"/>
 

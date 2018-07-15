@@ -2,6 +2,7 @@ package edu.cnm.deepdive.tileslide.controller;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
   private GridView tileGrid;
   private Button reset;
   private Button newGame;
+  private Button solve;
   private Toast toast;
 
   @Override
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     tileGrid.setOnItemClickListener(this);
     newGame = findViewById(R.id.new_game);
     reset = findViewById(R.id.reset_game);
+    solve = findViewById(R.id.solve);
     toast = new Toast(this);
     if (savedInstanceState != null) {
       createPuzzle();
@@ -54,6 +57,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
       @Override
       public void onClick(View v) {
         createPuzzle();
+      }
+    });
+    solve.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        frame.solve();
+        Log.e("PATH", frame.getPath().toString());
       }
     });
   }
