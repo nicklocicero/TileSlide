@@ -1,5 +1,10 @@
 package edu.cnm.deepdive.tileslide.model;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Random;
 
 public class Frame {
@@ -12,6 +17,10 @@ public class Frame {
   private boolean win = false;
   private int[] tilesOrder;
   private int[] startOrder;
+  private String[] path;
+  private int distance;
+
+  private static final String[] DIRECTIONS = {"left", "right", "up", "down"};
 
   public boolean getWin() {
     return win;
@@ -224,5 +233,33 @@ public class Frame {
   public void setMoves(int moves) {
     this.moves = moves;
   }
+
+  public void solve() {
+    PriorityQueue<Frame> states = new PriorityQueue<>(getDistance());
+    List<String> path = new ArrayList<>();
+    states.add(this);
+    while (states.size() > 0) {
+      Frame state = states.poll();
+      if (state.isWin()) {
+        return state.getPath();
+      }
+    }
+  }
+
+  public int getDistance() {
+    return distance;
+  }
+
+  public void setDistance(int distance) {
+    this.distance = distance;
+  }
+
+//  public class FrameComparator implements Comparator<Frame> {
+//
+//    public int compare( Frame x, Frame y ) {
+//      return x.getDistance() - y.getDistance();
+//    }
+//
+//  }
 
 }
