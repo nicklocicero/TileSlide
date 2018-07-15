@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
       @Override
       public void onClick(View v) {
         frame.solve();
-        Log.e("PATH", frame.getPath().toString());
+        Log.d("PATH", frame.getPath().toString());
       }
     });
   }

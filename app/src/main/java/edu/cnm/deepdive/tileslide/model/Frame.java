@@ -46,6 +46,8 @@ public class Frame implements Comparable<Frame> {
     tilesOrder = new int[size * size];
     startOrder = new int[size * size];
     scramble();
+    this.setTilesOrder(this.getTilesOrder());
+    this.setStartOrder(this.getStartOrder());
   }
 
   public void reset() {
@@ -279,7 +281,7 @@ public class Frame implements Comparable<Frame> {
         setPath(state.getPath());
         break;
       }
-      List<Frame> children = state.visit();
+      List<Frame> children = state.visit(state);
       for (int i = 0; i < children.size(); i++) {
         Frame child = children.get(i);
         int f = child.g() + child.h();
@@ -298,7 +300,7 @@ public class Frame implements Comparable<Frame> {
       for (int i = 0; i < size * size; i++) {
         if (tiles[i / size][i % size] != null) {
           int tileNo = tiles[i / size][i % size].getNumber();
-          if (tileNo == i) {
+          if (tileNo != i) {
             count++;
           }
         }
@@ -306,15 +308,15 @@ public class Frame implements Comparable<Frame> {
       return count;
   }
 
-  private List<Frame> visit() {
+  private List<Frame> visit(Frame frame) {
     List<Frame> children = new ArrayList<>();
     List<Integer[]> allowedMoves = getAllowedMoves();
     for (int i = 0; i < allowedMoves.size(); i++)  {
       Integer[] move = allowedMoves.get(i);
       if (tiles[move[0]][move[1]].getNumber() != lastMove) {
         Frame newInstance = new Frame(size, new Random());
-        newInstance.setTilesOrder(this.getTilesOrder());
-        newInstance.setStartOrder(this.getStartOrder());
+        newInstance.setTilesOrder(frame.getTilesOrder());
+        newInstance.setStartOrder(frame.getStartOrder());
         newInstance.setMoves(this.getMoves());
         newInstance.move(move[0], move[1]);
         newInstance.addToPath(new Integer[] {move[0], move[1]});
@@ -341,13 +343,13 @@ public class Frame implements Comparable<Frame> {
     int[] blankSpacePosition = getBlankSpacePosition();
     int blankRow = blankSpacePosition[0];
     int blankCol = blankSpacePosition[1];
-    if (blankRow > 0 && row == blankRow - 1 && col == blankCol) {
+    if (blankRow > 0 && row + 1 == blankRow && col == blankCol) {
       return DIRECTIONS.get("DOWN");
-    } else if (blankRow < size - 1 && row == blankRow + 1 && col == blankCol) {
+    } else if (blankRow < size - 1 && row - 1 == blankRow && col == blankCol) {
       return DIRECTIONS.get("UP");
-    } else if (blankCol > 0 && row == blankRow - 1 && col == blankCol - 1) {
+    } else if (blankCol > 0 && row == blankRow && col + 1 == blankCol) {
       return DIRECTIONS.get("RIGHT");
-    } else if (blankRow < size - 1 && row == blankRow - 1 && col == blankCol + 1) {
+    } else if (blankCol < size - 1 && row == blankRow && col - 1 == blankCol) {
       return DIRECTIONS.get("LEFT");
     }
     return "";
@@ -418,7 +420,7 @@ public class Frame implements Comparable<Frame> {
 
   @Override
   public int compareTo(Frame otherFrame) {
-    return otherFrame.getDistance() - getDistance();
+    return getDistance() - otherFrame.getDistance();
   }
 
   //  public class FrameComparator implements Comparator<Frame> {
