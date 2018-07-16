@@ -197,6 +197,36 @@ public class Puzzle implements Comparable<Puzzle> {
     return new LinkedList<>();
   }
 
+  public List<Integer> solveForHint() {
+    PriorityQueue<Puzzle> states = new PriorityQueue<>();
+    path = new LinkedList<>();
+    states.add(this);
+    while (states.size() > 0) {
+      Puzzle state = states.poll();
+      if (state.isGoalState()) {
+        path = state.path;
+        break;
+      } else if (states.size() > 10000) {
+        path = state.path;
+        break;
+      }
+      List<Puzzle> children = state.visit();
+      for (int i = 0; i < children.size(); i++) {
+        Puzzle child = children.get(i);
+        int f = child.g() + child.getManhattanDistance();
+        child.setDistance(f);
+        states.add(child);
+      }
+    }
+    return path;
+  }
+
+  public String hint() {
+    path = solveForHint();
+    Integer piece = path.get(0);
+    return getMove(piece);
+  }
+
   public int getDistance() {
     return distance;
   }

@@ -19,7 +19,7 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
 
-  private static int PUZZLE_SIZE = 4;
+  private static int PUZZLE_SIZE = 3;
 
   private Frame frame;
   private FrameAdapter adapter;
@@ -65,13 +65,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     solve.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        if (PUZZLE_SIZE == 3) {
-          Puzzle puzzle = new Puzzle(frame.getTiles(), frame.getSize());
-          List<Integer> moves = puzzle.solve();
-          Log.d("PATH1", moves.toString());
-        } else {
-          Toast.makeText(getApplicationContext(), "Can only solve 3x3 puzzles.", Toast.LENGTH_SHORT).show();
-        }
+        Toast.makeText(getApplicationContext(), new Puzzle(frame.getTiles(), PUZZLE_SIZE).hint(), Toast.LENGTH_SHORT).show();
       }
     });
   }
