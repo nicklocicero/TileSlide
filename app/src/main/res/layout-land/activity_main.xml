@@ -23,10 +23,21 @@
     android:layout_marginTop="8dp"
     android:layout_marginStart="8dp"
     android:text="@string/reset_game"
-    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintBottom_toTopOf="@+id/solve"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toEndOf="@+id/tile_grid"
     app:layout_constraintTop_toBottomOf="@id/new_game"/>
+  <Button
+    android:id="@+id/solve"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
+    android:text="@string/solve"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toEndOf="@+id/tile_grid"
+    app:layout_constraintTop_toBottomOf="@id/reset_game"/>
   <GridView
     android:id="@+id/tile_grid"
     android:layout_width="0dp"
