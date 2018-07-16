@@ -1,6 +1,8 @@
 package edu.cnm.deepdive.tileslide.model;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,6 +24,7 @@ public class Frame implements Comparable<Frame> {
   private List<Integer[]> path = new ArrayList<>();
   private int distance;
   private int lastMove;
+  private int thisLastMove;
 
   private static final Map<String, String> DIRECTIONS = new HashMap(){{
       put("LEFT", "left");
@@ -434,6 +437,14 @@ public class Frame implements Comparable<Frame> {
 
   public void setSize(int size) {
     this.size = size;
+  }
+
+  public int getLastMove() {
+    return lastMove;
+  }
+
+  public int getThisLastMove() {
+    return thisLastMove;
   }
 
   //  private static class SolvePuzzle extends AsyncTask<Frame, Void, List<Integer[]>> {

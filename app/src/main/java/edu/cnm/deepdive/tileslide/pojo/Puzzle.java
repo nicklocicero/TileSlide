@@ -18,7 +18,7 @@ public class Puzzle implements Comparable<Puzzle> {
 
   public Puzzle() { }
 
-  public Puzzle(Tile[][] tiles, int size) {
+  public Puzzle(Tile[][] tiles, int size, int lastMove) {
     this.size = size;
     this.board = new int[size][size];
     for (int i = 0; i < size; i++) {
@@ -29,6 +29,7 @@ public class Puzzle implements Comparable<Puzzle> {
           board[i][j] = tiles[i][j].getNumber();
         }
       }
+      this.lastMove = lastMove;
     }
     this.path = new LinkedList<>();
     this.lastMove = -1;
@@ -62,7 +63,7 @@ public class Puzzle implements Comparable<Puzzle> {
       return Direction[2];
     } else if (column > 0 && piece == board[row][column-1]) {
       return Direction[1];
-    } else if (column < size - 1 && piece == this.board[row][column+1]) {
+    } else if (column < size - 1 && piece == board[row][column+1]) {
       return Direction[0];
     }
     return null;
@@ -197,18 +198,17 @@ public class Puzzle implements Comparable<Puzzle> {
     return new LinkedList<>();
   }
 
-  public List<Integer> solveForHint() {
+  public Integer solveForHint(Integer lastMove) {
     PriorityQueue<Puzzle> states = new PriorityQueue<>();
     path = new LinkedList<>();
     states.add(this);
     while (states.size() > 0) {
       Puzzle state = states.poll();
-      if (state.isGoalState()) {
-        path = state.path;
-        break;
-      } else if (states.size() > 10000) {
-        path = state.path;
-        break;
+      if (state.isGoalState() || states.size() > 10000) {
+        while (state.path.get(0) == lastMove) {
+          state = states.poll();
+        }
+        return state.path.get(0);
       }
       List<Puzzle> children = state.visit();
       for (int i = 0; i < children.size(); i++) {
@@ -218,12 +218,11 @@ public class Puzzle implements Comparable<Puzzle> {
         states.add(child);
       }
     }
-    return path;
+    return path.get(0);
   }
 
-  public String hint() {
-    path = solveForHint();
-    Integer piece = path.get(0);
+  public String hint(Integer lastMove) {
+    Integer piece = solveForHint(lastMove);
     return getMove(piece);
   }
 
