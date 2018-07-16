@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
       public void onClick(View v) {
         Puzzle puzzle = new Puzzle(frame.getTiles(), frame.getSize());
         List<Integer> moves = puzzle.solve();
-        Log.d("PATH", moves.toString());
+        Log.d("PATH1", moves.toString());
       }
     });
   }

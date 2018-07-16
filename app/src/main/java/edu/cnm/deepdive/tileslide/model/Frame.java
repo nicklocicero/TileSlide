@@ -167,18 +167,18 @@ public class Frame implements Comparable<Frame> {
   }
 
   private void shuffle() {
-//    for (int toPosition = size * size - 1; toPosition >= 0; toPosition--) {
-//      int toRow = toPosition / size;
-//      int toCol = toPosition % size;
-//      int fromPosition = rng.nextInt(toPosition + 1);
-//      if (fromPosition != toPosition) {
-//        int fromRow = fromPosition / size;
-//        int fromCol = fromPosition % size;
-//        swap(tiles, fromRow, fromCol, toRow, toCol);
-//      }
-//    }
-    swap(tiles, 3, 3, 3, 2);
-    swap(tiles, 3, 2, 2, 2);
+    for (int toPosition = size * size - 1; toPosition >= 0; toPosition--) {
+      int toRow = toPosition / size;
+      int toCol = toPosition % size;
+      int fromPosition = rng.nextInt(toPosition + 1);
+      if (fromPosition != toPosition) {
+        int fromRow = fromPosition / size;
+        int fromCol = fromPosition % size;
+        swap(tiles, fromRow, fromCol, toRow, toCol);
+      }
+    }
+//    swap(tiles, 3, 3, 3, 2);
+//    swap(tiles, 3, 2, 2, 2);
   }
 
   private boolean isParityEven() {
