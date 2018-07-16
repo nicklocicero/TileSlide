@@ -16,6 +16,8 @@ public class Puzzle implements Comparable<Puzzle> {
 
   String[] Direction = {"left", "right", "up", "down"};
 
+  public Puzzle() { }
+
   public Puzzle(Tile[][] tiles, int size) {
     this.size = size;
     this.board = new int[size][size];
@@ -33,25 +35,10 @@ public class Puzzle implements Comparable<Puzzle> {
     this.distance = 0;
   }
 
-  Puzzle(int[][] board, int size, int lastMove, List<Integer> path) {
-    this.size = size;
-    this.board = new int[size][size];
-    for (int i = 0; i < size; i++) {
-      for (int j = 0; j < size; j++) {
-        this.board[i][j] = board[i][j];
-      }
-    }
-    this.path = new LinkedList<>();
-    for (Integer move : path) {
-      path.add(move);
-    }
-    this.lastMove = lastMove;
-  }
-
   private int[] getBlankSpacePosition() {
     for (int i = 0; i < size; i++) {
       for (int j = 0; j < size; j++) {
-        if (board[i][j] == 0) {
+        if (board[i][j] == size * size - 1) {
           return new int[] {i, j};
         }
       }
@@ -112,20 +99,35 @@ public class Puzzle implements Comparable<Puzzle> {
     for (int i = 0; i < size; i++) {
       for (int j = 0; j < size; j++) {
         int piece = board[i][j];
-        if (piece != size * size - 1) {
-          int originalRow = piece / size;
-          int originalCol = piece % size;
-          if (i != originalRow && j != originalCol) {
-            return false;
-          }
+        int originalRow = piece / size;
+        int originalCol = piece % size;
+        if (i != originalRow || j != originalCol) {
+          return false;
         }
       }
     }
     return true;
   }
 
-  private Puzzle getCopy() {
-    return new Puzzle(board, size, lastMove, path);
+  private Puzzle getCopy(Puzzle puzzle) {
+    Puzzle newPuzzle = new Puzzle();
+    newPuzzle.setSize(puzzle.getSize());
+    int[][] board = puzzle.getBoard();
+    int[][] newBoard = new int[size][size];
+    for (int i = 0; i < size; i++) {
+      for (int j = 0; j < size; j++) {
+        newBoard[i][j] = board[i][j];
+      }
+    }
+    newPuzzle.setBoard(newBoard);
+    List<Integer> oldPath = puzzle.getPath();
+    List<Integer> newPath = new LinkedList<>();
+    for (Integer i : oldPath) {
+      newPath.add(i);
+    }
+    newPuzzle.setPath(newPath);
+    newPuzzle.setLastMove(puzzle.getLastMove());
+    return newPuzzle;
   }
 
   private List<Integer> getAllowedMoves() {
@@ -147,7 +149,7 @@ public class Puzzle implements Comparable<Puzzle> {
     for (int i = 0; i < allowedMoves.size(); i++)  {
       Integer move = allowedMoves.get(i);
       if (move != lastMove) {
-        Puzzle newInstance = getCopy();
+        Puzzle newInstance = getCopy(this);
         newInstance.move(move);
         newInstance.path.add(move);
         children.add(newInstance);
@@ -188,6 +190,7 @@ public class Puzzle implements Comparable<Puzzle> {
       for (int i = 0; i < children.size(); i++) {
         Puzzle child = children.get(i);
         int f = child.g() + child.getManhattanDistance();
+        child.setDistance(f);
         states.add(child);
       }
     }
@@ -207,4 +210,35 @@ public class Puzzle implements Comparable<Puzzle> {
     return getDistance() - otherPuzzle.getDistance();
   }
 
+  public int[][] getBoard() {
+    return board;
+  }
+
+  public void setBoard(int[][] board) {
+    this.board = board;
+  }
+
+  public int getSize() {
+    return size;
+  }
+
+  public void setSize(int size) {
+    this.size = size;
+  }
+
+  public List<Integer> getPath() {
+    return path;
+  }
+
+  public void setPath(List<Integer> path) {
+    this.path = path;
+  }
+
+  public int getLastMove() {
+    return lastMove;
+  }
+
+  public void setLastMove(int lastMove) {
+    this.lastMove = lastMove;
+  }
 }
