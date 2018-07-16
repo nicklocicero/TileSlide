@@ -1,6 +1,11 @@
 package edu.cnm.deepdive.tileslide.model;
 
+import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -133,6 +138,7 @@ public class Frame implements Comparable<Frame> {
               && toCol < size
               && tiles[toRow][toCol] == null
       ) {
+      lastMove = tiles[fromRow][fromCol].getNumber();
       swap(tiles, fromRow, fromCol, toRow, toCol);
       win = isWin();
       return true;
@@ -172,6 +178,7 @@ public class Frame implements Comparable<Frame> {
 //      }
 //    }
     swap(tiles, 3, 3, 3, 2);
+    swap(tiles, 3, 2, 2, 2);
   }
 
   private boolean isParityEven() {
@@ -281,12 +288,13 @@ public class Frame implements Comparable<Frame> {
         setPath(state.getPath());
         break;
       }
-      List<Frame> children = state.visit(state);
+      List<Frame> children = visit(state);
       for (int i = 0; i < children.size(); i++) {
         Frame child = children.get(i);
-        int f = child.g() + child.h();
+        int f = child.getMoves() + child.h();
         child.setDistance(f);
         states.add(child);
+        Log.d("PATH", "We have " + Integer.toString(states.size()) + " states.");
       }
     }
   }
@@ -313,12 +321,13 @@ public class Frame implements Comparable<Frame> {
     List<Integer[]> allowedMoves = getAllowedMoves();
     for (int i = 0; i < allowedMoves.size(); i++)  {
       Integer[] move = allowedMoves.get(i);
-      if (tiles[move[0]][move[1]].getNumber() != lastMove) {
+      if (tiles[move[0]][move[1]].getNumber() != frame.lastMove) {
         Frame newInstance = new Frame(size, new Random());
         newInstance.setTilesOrder(frame.getTilesOrder());
         newInstance.setStartOrder(frame.getStartOrder());
-        newInstance.setMoves(this.getMoves());
+        newInstance.setMoves(frame.getMoves());
         newInstance.move(move[0], move[1]);
+        newInstance.setPath(frame.getPath());
         newInstance.addToPath(new Integer[] {move[0], move[1]});
         children.add(newInstance);
       }
@@ -411,7 +420,7 @@ public class Frame implements Comparable<Frame> {
   }
 
   public void setPath(List<Integer[]> path) {
-    this.path = path;
+    Collections.copy(path, this.path);
   }
 
   public void addToPath(Integer[] direction) {
@@ -423,6 +432,44 @@ public class Frame implements Comparable<Frame> {
     return getDistance() - otherFrame.getDistance();
   }
 
+  public int getSize() {
+    return size;
+  }
+
+  public void setSize(int size) {
+    this.size = size;
+  }
+
+  //  private static class SolvePuzzle extends AsyncTask<Frame, Void, List<Integer[]>> {
+//
+//    @Override
+//    protected List<Integer[]> doInBackground(Frame... frames) {
+//      PriorityQueue<Frame> states = new PriorityQueue<>();
+//      states.add(frames[0]);
+//      while (states.size() > 0) {
+//        Frame state = states.poll();
+//        if (state.isWin()) {
+//          return state.getPath();
+//        }
+//        List<Frame> children = state.visit(state);
+//        for (int i = 0; i < children.size(); i++) {
+//          Frame child = children.get(i);
+//          int f = child.g() + child.h();
+//          child.setDistance(f);
+//          states.add(child);
+//        }
+//      }
+//      return null;
+//    }
+//
+//    @Override
+//    protected void onPostExecute(List<Integer[]> result) {
+//      super.onPostExecute(result);
+//    }
+//  }
+
+}
+
   //  public class FrameComparator implements Comparator<Frame> {
 //
 //    public int compare( Frame x, Frame y ) {
@@ -430,5 +477,3 @@ public class Frame implements Comparable<Frame> {
 //    }
 //
 //  }
-
-}

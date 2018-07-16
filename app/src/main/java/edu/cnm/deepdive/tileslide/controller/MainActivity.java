@@ -12,6 +12,9 @@ import android.widget.Toast;
 import edu.cnm.deepdive.tileslide.R;
 import edu.cnm.deepdive.tileslide.View.FrameAdapter;
 import edu.cnm.deepdive.tileslide.model.Frame;
+import edu.cnm.deepdive.tileslide.pojo.Puzzle;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
@@ -63,7 +66,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
       @Override
       public void onClick(View v) {
         frame.solve();
-        Log.d("PATH", frame.getPath().toString());
+        Puzzle puzzle = new Puzzle(frame.getTiles(), frame.getSize());
+        List<Integer> moves = puzzle.solve();
+        Log.d("PATH", moves.toString());
       }
     });
   }
