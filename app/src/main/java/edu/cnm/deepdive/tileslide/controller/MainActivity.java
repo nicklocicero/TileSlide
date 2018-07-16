@@ -65,9 +65,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     solve.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        Puzzle puzzle = new Puzzle(frame.getTiles(), frame.getSize());
-        List<Integer> moves = puzzle.solve();
-        Log.d("PATH1", moves.toString());
+        if (PUZZLE_SIZE == 3) {
+          Puzzle puzzle = new Puzzle(frame.getTiles(), frame.getSize());
+          List<Integer> moves = puzzle.solve();
+          Log.d("PATH1", moves.toString());
+        } else {
+          Toast.makeText(getApplicationContext(), "Can only solve 3x3 puzzles.", Toast.LENGTH_SHORT).show();
+        }
       }
     });
   }
