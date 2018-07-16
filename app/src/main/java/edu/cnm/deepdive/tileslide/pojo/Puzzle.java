@@ -69,6 +69,22 @@ public class Puzzle implements Comparable<Puzzle> {
     return null;
   };
 
+  private String getPlayerMove(int piece) {
+    int[] blankSpacePosition = this.getBlankSpacePosition();
+    int row = blankSpacePosition[0];
+    int column = blankSpacePosition[1];
+    if (row > 0 && piece == board[row-1][column]) {
+      return "move top tile";
+    } else if (row < size - 1 && piece == board[row+1][column]) {
+      return "move bottom tile";
+    } else if (column > 0 && piece == board[row][column-1]) {
+      return "move left tile";
+    } else if (column < size - 1 && piece == board[row][column+1]) {
+      return "move right tile";
+    }
+    return null;
+  };
+
   private String move(int piece) {
     String move = getMove(piece);
     if (move != null) {
@@ -223,7 +239,7 @@ public class Puzzle implements Comparable<Puzzle> {
 
   public String hint(Integer lastMove) {
     Integer piece = solveForHint(lastMove);
-    return getMove(piece);
+    return getPlayerMove(piece);
   }
 
   public int getDistance() {

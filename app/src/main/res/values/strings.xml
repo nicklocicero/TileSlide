@@ -4,5 +4,5 @@
   <string name="win_toast">You won!</string>
   <string name="won_already_toast">You already won.</string>
   <string name="reset_game">Reset Game</string>
-  <string name="solve">Solve</string>
+  <string name="hint">Hint</string>
 </resources>

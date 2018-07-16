@@ -1,7 +1,11 @@
 package edu.cnm.deepdive.tileslide.View;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Path;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -46,8 +50,6 @@ public class FrameAdapter extends ArrayAdapter<Tile> {
     }
     Tile tile = getItem(position);
     TileView tileView = convertView.findViewById(R.id.tile_image);
-//    Animation animation = AnimationUtils.loadAnimation(getContext(),R.anim.grid_item_anim);
-//    tileView.setAnimation(animation);
     if (tile != null) {
       tileView.setImageBitmap(tileImages[tile.getNumber()]);
     } else if (frame.isWin()) {
@@ -63,6 +65,14 @@ public class FrameAdapter extends ArrayAdapter<Tile> {
     copyModelTiles();
     setNotifyOnChange(false);
     // TODO Possibly modify this if we want to add animation.
+//    Tile tile = getItem(frame.getLastMove());
+//    TileVi
+//    ObjectAnimator moveX = ObjectAnimator.ofFloat(tileImages, "x", 1);
+//    ObjectAnimator moveY = ObjectAnimator.ofFloat(tileImages, "y", 1 );
+//    AnimatorSet as = new AnimatorSet();
+//    as.playTogether(moveX, moveY);
+//    as.start();
+    int[] currentMove = frame.getCurrentMove().clone();
     clear();
     addAll(tiles);
     super.notifyDataSetChanged();

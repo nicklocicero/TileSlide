@@ -25,6 +25,8 @@ public class Frame implements Comparable<Frame> {
   private int distance;
   private int lastMove;
   private int thisLastMove;
+  private String test = "hi";
+  private int[] currentMove;
 
   private static final Map<String, String> DIRECTIONS = new HashMap(){{
       put("LEFT", "left");
@@ -445,6 +447,14 @@ public class Frame implements Comparable<Frame> {
 
   public int getThisLastMove() {
     return thisLastMove;
+  }
+
+  public int[] getCurrentMove() {
+    return currentMove.clone();
+  }
+
+  public void setCurrentMove(int[] currentMove) {
+    this.currentMove = currentMove;
   }
 
   //  private static class SolvePuzzle extends AsyncTask<Frame, Void, List<Integer[]>> {

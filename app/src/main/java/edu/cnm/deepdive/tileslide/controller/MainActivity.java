@@ -2,7 +2,6 @@ package edu.cnm.deepdive.tileslide.controller;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -13,13 +12,11 @@ import edu.cnm.deepdive.tileslide.R;
 import edu.cnm.deepdive.tileslide.View.FrameAdapter;
 import edu.cnm.deepdive.tileslide.model.Frame;
 import edu.cnm.deepdive.tileslide.pojo.Puzzle;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
 
-  private static int PUZZLE_SIZE = 4;
+  private static int PUZZLE_SIZE = 3;
 
   private Frame frame;
   private FrameAdapter adapter;
@@ -30,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
   private Toast toast;
   private Puzzle puzzle;
   private String[] lastMoves = new String[2];
+  private int[] currentMove;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     tileGrid.setOnItemClickListener(this);
     newGame = findViewById(R.id.new_game);
     reset = findViewById(R.id.reset_game);
-    solve = findViewById(R.id.solve);
+    solve = findViewById(R.id.hint);
     toast = new Toast(this);
     if (savedInstanceState != null) {
       createPuzzle();
@@ -79,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     if (frame.getWin()) {
       Toast.makeText(this, "You already won.", Toast.LENGTH_SHORT).show();
     } else {
+      frame.setCurrentMove(new int[] {position/PUZZLE_SIZE, position%PUZZLE_SIZE});
       frame.move(position / PUZZLE_SIZE, position % PUZZLE_SIZE);
       adapter.notifyDataSetChanged();
       if (frame.getWin()) {
