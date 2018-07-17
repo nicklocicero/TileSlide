@@ -26,6 +26,7 @@ import android.widget.ArrayAdapter;
 import edu.cnm.deepdive.tileslide.R;
 import edu.cnm.deepdive.tileslide.model.Frame;
 import edu.cnm.deepdive.tileslide.model.Tile;
+import java.util.Random;
 
 public class FrameAdapter extends ArrayAdapter<Tile> {
 
@@ -100,8 +101,14 @@ public class FrameAdapter extends ArrayAdapter<Tile> {
   }
 
   private void sliceBitmap() {
-    Drawable drawable = size == 3 ? ContextCompat.getDrawable(getContext(), R.drawable.android_robot_circle) :
-                                           ContextCompat.getDrawable(getContext(), R.drawable.lavendar);
+    Random rng = new Random();
+    int[] res = {R.drawable.android_robot_circle, R.drawable.city, R.drawable.city_abstract, R.drawable.city_new_york,
+                  R.drawable.corey_archangel, R.drawable.dataset_card, R.drawable.forest, R.drawable.forest_painting,
+                  R.drawable.gradient, R.drawable.gradient_one, R.drawable.gradient_two, R.drawable.gradient_three,
+                  R.drawable.gradient_four, R.drawable.gradient_five, R.drawable.jazz_club, R.drawable.kaleidoscope_one,
+                  R.drawable.kaleidoscope_two, R.drawable.kaleidoscope_three, R.drawable.lavendar, R.drawable.lion,
+                  R.drawable.plane, R.drawable.plane, R.drawable.wolf_cub, R.drawable.rain_forest};
+    Drawable drawable = ContextCompat.getDrawable(getContext(), res[rng.nextInt(res.length)]);
     Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
     tileImages = new Bitmap[size * size];
     int imageWidth = bitmap.getWidth();
