@@ -8,15 +8,19 @@ import android.graphics.Bitmap;
 import android.graphics.Path;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.view.animation.GridLayoutAnimationController;
+import android.view.animation.LayoutAnimationController;
 import android.view.animation.TranslateAnimation;
 import android.widget.ArrayAdapter;
 import edu.cnm.deepdive.tileslide.R;
@@ -62,8 +66,8 @@ public class FrameAdapter extends ArrayAdapter<Tile> {
 
   @Override
   public void notifyDataSetChanged() {
-    copyModelTiles();
-    setNotifyOnChange(false);
+
+
     // TODO Possibly modify this if we want to add animation.
 //    Tile tile = getItem(frame.getLastMove());
 //    TileVi
@@ -72,7 +76,16 @@ public class FrameAdapter extends ArrayAdapter<Tile> {
 //    AnimatorSet as = new AnimatorSet();
 //    as.playTogether(moveX, moveY);
 //    as.start();
-    int[] currentMove = frame.getCurrentMove().clone();
+//    int currentMove = frame.getCurrentMove();
+//    String direction = frame.getMove(currentMove/size, currentMove % size);
+//    Path path = new Path();
+//    path.moveTo();
+////    ValueAnimator pathAnimator = ObjectAnimator.ofFloat(getView(currentMove) , "x", "y", path);
+//    if (frame.getAnimationLastMove() != -1) {
+//      frame.move(frame.getAnimationLastMove() / size, frame.getAnimationLastMove() % size);
+//    }
+    copyModelTiles();
+    setNotifyOnChange(false);
     clear();
     addAll(tiles);
     super.notifyDataSetChanged();
@@ -105,6 +118,7 @@ public class FrameAdapter extends ArrayAdapter<Tile> {
     tileImage = Bitmap.createBitmap(tileImages[tileImages.length - 1]);
     noTileImage = Bitmap.createBitmap(tileImages[tileImages.length - 1]);
     noTileImage.eraseColor(ContextCompat.getColor(getContext(), R.color.puzzleBackground));
+    noTileImage.setHasAlpha(true);
   }
 
   public Tile[] getTiles() {

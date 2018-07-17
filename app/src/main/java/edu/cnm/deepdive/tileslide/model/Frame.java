@@ -26,7 +26,8 @@ public class Frame implements Comparable<Frame> {
   private int lastMove;
   private int thisLastMove;
   private String test = "hi";
-  private int[] currentMove;
+  private int currentMove;
+  private int animationLastMove;
 
   private static final Map<String, String> DIRECTIONS = new HashMap(){{
       put("LEFT", "left");
@@ -52,6 +53,7 @@ public class Frame implements Comparable<Frame> {
     tilesOrder = new int[size * size];
     startOrder = new int[size * size];
     scramble();
+    this.animationLastMove = -1;
     this.setTilesOrder(this.getTilesOrder());
     this.setStartOrder(this.getStartOrder());
   }
@@ -349,7 +351,7 @@ public class Frame implements Comparable<Frame> {
     return allowedMoves;
   };
 
-  private String getMove (int row, int col) {
+  public String getMove (int row, int col) {
     int[] blankSpacePosition = getBlankSpacePosition();
     int blankRow = blankSpacePosition[0];
     int blankCol = blankSpacePosition[1];
@@ -449,12 +451,24 @@ public class Frame implements Comparable<Frame> {
     return thisLastMove;
   }
 
-  public int[] getCurrentMove() {
-    return currentMove.clone();
+  public int getCurrentMove() {
+    return currentMove;
   }
 
-  public void setCurrentMove(int[] currentMove) {
+  public void setCurrentMove(int currentMove) {
     this.currentMove = currentMove;
+  }
+
+  public int getAnimationLastMove() {
+    return animationLastMove;
+  }
+
+  public void setAnimationLastMove(int animationLastMove) {
+    this.animationLastMove = animationLastMove;
+  }
+
+  public int getTileAt(int position) {
+    return getTilesOrder()[position];
   }
 
   //  private static class SolvePuzzle extends AsyncTask<Frame, Void, List<Integer[]>> {
