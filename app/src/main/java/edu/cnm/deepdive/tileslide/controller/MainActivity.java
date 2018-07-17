@@ -1,5 +1,6 @@
 package edu.cnm.deepdive.tileslide.controller;
 
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
   private Button reset;
   private Button newGame;
   private Button hint;
+  private Button solve;
   private Puzzle puzzle;
   private String[] lastMoves = new String[2];
   private int[] currentMove;
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     newGame = findViewById(R.id.new_game);
     reset = findViewById(R.id.reset_game);
     hint = findViewById(R.id.hint);
+    solve = findViewById(R.id.solve);
     if (savedInstanceState != null) {
       createPuzzle();
       frame.setTilesOrder(savedInstanceState.getIntArray("tilesOrder"));
@@ -66,6 +69,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         puzzle = new Puzzle(frame.getTiles(), PUZZLE_SIZE, frame.getThisLastMove());
         String hint = puzzle.hint(frame.getLastMove());
         Toast.makeText(getApplicationContext(), hint, Toast.LENGTH_SHORT).show();
+      }
+    });
+    solve.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+//        while (!frame.isWin()) {
+//          puzzle = new Puzzle(frame.getTiles(), PUZZLE_SIZE, frame.getLastMove());
+//          Integer hint = puzzle.solveForMove(frame.getLastMove());
+//          Integer indexNumber = frame.getTileAt(hint);
+//          frame.move(indexNumber);
+//          try {
+//            Thread.sleep(500);
+//          } catch (InterruptedException e) {
+//            e.printStackTrace();
+//          }
+//          adapter.notifyDataSetChanged();
+//        }
+        //Toast.makeText(getApplicationContext(), "We have a winner!", Toast.LENGTH_LONG).show();
       }
     });
   }

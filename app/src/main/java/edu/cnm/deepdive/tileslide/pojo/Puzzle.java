@@ -200,7 +200,10 @@ public class Puzzle implements Comparable<Puzzle> {
     states.add(this);
     while (states.size() > 0) {
       Puzzle state = states.poll();
-      if (state.isGoalState()) {
+      if (state.isGoalState() || states.size() > 10000) {
+        while (state.path.get(0) == lastMove) {
+          state = states.poll();
+        }
         return state.path;
       }
       List<Puzzle> children = state.visit();
@@ -214,7 +217,7 @@ public class Puzzle implements Comparable<Puzzle> {
     return new LinkedList<>();
   }
 
-  public Integer solveForHint(Integer lastMove) {
+  public Integer solveForMove(Integer lastMove) {
     PriorityQueue<Puzzle> states = new PriorityQueue<>();
     path = new LinkedList<>();
     states.add(this);
@@ -238,7 +241,7 @@ public class Puzzle implements Comparable<Puzzle> {
   }
 
   public String hint(Integer lastMove) {
-    Integer piece = solveForHint(lastMove);
+    Integer piece = solveForMove(lastMove);
     return getPlayerMove(piece);
   }
 

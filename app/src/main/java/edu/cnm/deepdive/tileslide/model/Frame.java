@@ -53,7 +53,9 @@ public class Frame implements Comparable<Frame> {
     tilesOrder = new int[size * size];
     startOrder = new int[size * size];
     scramble();
+    this.thisLastMove = -1;
     this.animationLastMove = -1;
+    this.lastMove = -1;
     this.setTilesOrder(this.getTilesOrder());
     this.setStartOrder(this.getStartOrder());
   }
@@ -367,6 +369,18 @@ public class Frame implements Comparable<Frame> {
     return "";
   }
 
+  public void moveTileByValue (int tileNumber) {
+    tilesOrder = getTilesOrder();
+    int counter = 0;
+    for (Integer i : tilesOrder) {
+      if (i == tileNumber) {
+        break;
+      }
+      counter++;
+    }
+    move(counter / size, counter & size);
+  }
+
   private String move(int row, int col, boolean use) {
     String move = getMove(row, col);
     if (!move.equals("")) {
@@ -394,20 +408,56 @@ public class Frame implements Comparable<Frame> {
     return move;
   }
 
-  private boolean move(int fromRow, int fromCol, int toRow, int toCol, boolean use) {
-    if (!win &&
-        tiles[fromRow][fromCol] != null
-        && toRow >= 0
-        && toRow < size
-        && toCol >= 0
-        && toCol < size
-        && tiles[toRow][toCol] == null
-        ) {
-      swap(tiles, fromRow, fromCol, toRow, toCol);
-      win = isWin();
-      return true;
+  public String move(int piece) {
+    String move = getMove(piece / size, piece % size);
+    if (move != null) {
+      int[] blankSpacePosition = getBlankSpacePosition();
+      int row = blankSpacePosition[0];
+      int column = blankSpacePosition[1];
+      switch (move) {
+        case "left":
+          swap(tiles, row, column, row, column + 1);
+          break;
+        case "right":
+          swap(tiles, row, column, row, column - 1);
+          break;
+        case "up":
+          swap(tiles, row, column, row + 1, column);
+          break;
+        case "down":
+          swap(tiles, row, column, row - 1, column);
+          break;
+      }
+      if (move != null) {
+        lastMove = piece;
+      }
     }
-    return false;
+    return move;
+  }
+
+  public void move(String move, int piece) {
+    if (move != null) {
+      int[] blankSpacePosition = getBlankSpacePosition();
+      int row = blankSpacePosition[0];
+      int column = blankSpacePosition[1];
+      switch (move) {
+        case "move left tile":
+          swap(tiles, row, column, row, column - 1);
+          break;
+        case "move right tile":
+          swap(tiles, row, column, row, column + 1);
+          break;
+        case "move bottom tile":
+          swap(tiles, row, column, row + 1, column);
+          break;
+        case "move top tile":
+          swap(tiles, row, column, row - 1, column);
+          break;
+      }
+//      if (move != null) {
+//        lastMove = piece;
+//      }
+    }
   }
 
   public int getDistance() {
@@ -467,8 +517,15 @@ public class Frame implements Comparable<Frame> {
     this.animationLastMove = animationLastMove;
   }
 
-  public int getTileAt(int position) {
-    return getTilesOrder()[position];
+  public int getTileAt(int value) {
+    int count = 0;
+    for (Integer i : getTilesOrder()) {
+      if (i == value) {
+        return count;
+      }
+      count++;
+    }
+    return count;
   }
 
   //  private static class SolvePuzzle extends AsyncTask<Frame, Void, List<Integer[]>> {
