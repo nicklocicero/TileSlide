@@ -18,6 +18,15 @@
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintStart_toEndOf="@+id/tile_grid"/>
   <Button
+    android:id="@+id/solve"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/solve"
+    app:layout_constraintBottom_toTopOf="@+id/reset_game"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toEndOf="@+id/tile_grid"
+    app:layout_constraintTop_toBottomOf="@id/new_game"/>
+  <Button
     android:id="@+id/reset_game"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -25,7 +34,7 @@
     app:layout_constraintBottom_toTopOf="@+id/hint"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toEndOf="@+id/tile_grid"
-    app:layout_constraintTop_toBottomOf="@id/new_game"/>
+    app:layout_constraintTop_toBottomOf="@id/solve"/>
   <Button
     android:id="@+id/hint"
     android:layout_width="wrap_content"

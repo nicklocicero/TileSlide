@@ -1,20 +1,9 @@
 package edu.cnm.deepdive.tileslide.controller;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
-import android.graphics.Path;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.LayoutAnimationController;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
@@ -34,8 +23,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
   private GridView tileGrid;
   private Button reset;
   private Button newGame;
-  private Button solve;
-  private Toast toast;
+  private Button hint;
   private Puzzle puzzle;
   private String[] lastMoves = new String[2];
   private int[] currentMove;
@@ -49,8 +37,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     tileGrid.setOnItemClickListener(this);
     newGame = findViewById(R.id.new_game);
     reset = findViewById(R.id.reset_game);
-    solve = findViewById(R.id.hint);
-    toast = new Toast(this);
+    hint = findViewById(R.id.hint);
     if (savedInstanceState != null) {
       createPuzzle();
       frame.setTilesOrder(savedInstanceState.getIntArray("tilesOrder"));
@@ -73,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         createPuzzle();
       }
     });
-    solve.setOnClickListener(new OnClickListener() {
+    hint.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
         puzzle = new Puzzle(frame.getTiles(), PUZZLE_SIZE, frame.getThisLastMove());
