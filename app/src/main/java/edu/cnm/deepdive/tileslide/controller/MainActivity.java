@@ -1,5 +1,8 @@
 package edu.cnm.deepdive.tileslide.controller;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -96,32 +99,35 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     if (frame.getWin()) {
       Toast.makeText(this, "You already won.", Toast.LENGTH_SHORT).show();
     } else {
+      String direction = frame.getMove(position / PUZZLE_SIZE, position % PUZZLE_SIZE);
       frame.move(position / PUZZLE_SIZE, position % PUZZLE_SIZE);
-      adapter.notifyDataSetChanged();
-//      int last = frame.getAnimationLastMove();
-//      String direction = frame.getMove(position / PUZZLE_SIZE, position % PUZZLE_SIZE);
-//      frame.move(position / PUZZLE_SIZE, position % PUZZLE_SIZE);
-//      ObjectAnimator animation = null;
-//      if (direction.equals("left")) {
-//        animation = ObjectAnimator.ofFloat(view, "translationX", -view.getWidth());
-//      } else if (direction.equals("right")) {
-//        animation = ObjectAnimator.ofFloat(view, "translationX", view.getWidth());
-//      } else if (direction.equals("down")) {
-//        animation = ObjectAnimator.ofFloat(view, "translationY", view.getHeight());
-//      } else if (direction.equals("up")) {
-//        animation = ObjectAnimator.ofFloat(view, "translationY", -view.getHeight());
-//      }
-//      if (animation != null) {
-//        animation.setDuration(400);
-//        animation.start();
-//        animation.addListener(new AnimatorListenerAdapter() {
-//          @Override
-//          public void onAnimationEnd(Animator animation) {
-//            frame.setAnimationLastMove(position);
-//            adapter.notifyDataSetChanged();
-//          }
-//        });
-//      }
+      ObjectAnimator animation = null;
+      if (direction.equals("left")) {
+        animation = ObjectAnimator.ofFloat(view, "translationX", -view.getWidth());
+      } else if (direction.equals("right")) {
+        animation = ObjectAnimator.ofFloat(view, "translationX", view.getWidth());
+      } else if (direction.equals("down")) {
+        animation = ObjectAnimator.ofFloat(view, "translationY", view.getHeight());
+      } else if (direction.equals("up")) {
+        animation = ObjectAnimator.ofFloat(view, "translationY", -view.getHeight());
+      }
+      if (animation != null) {
+        animation.setDuration(400);
+        animation.addListener(new AnimatorListenerAdapter() {
+          @Override
+          public void onAnimationEnd(Animator animation) {
+            tileGrid.setOnItemClickListener(MainActivity.this);
+            frame.setAnimationLastMove(position);
+            adapter.notifyDataSetChanged();
+          }
+          @Override
+          public void onAnimationCancel(Animator animation) {
+            tileGrid.setOnItemClickListener(MainActivity.this);
+          }
+        });
+
+        animation.start();
+      }
       if (frame.getWin()) {
         Toast.makeText(this, "You won!", Toast.LENGTH_SHORT).show();
       }

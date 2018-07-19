@@ -528,6 +528,10 @@ public class Frame implements Comparable<Frame> {
     return count;
   }
 
+  public interface OnMoveListener {
+
+  }
+
   //  private static class SolvePuzzle extends AsyncTask<Frame, Void, List<Integer[]>> {
 //
 //    @Override

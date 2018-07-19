@@ -1,27 +1,15 @@
 package edu.cnm.deepdive.tileslide.View;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Path;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.AnimationUtils;
-import android.view.animation.GridLayoutAnimationController;
-import android.view.animation.LayoutAnimationController;
-import android.view.animation.TranslateAnimation;
 import android.widget.ArrayAdapter;
 import edu.cnm.deepdive.tileslide.R;
 import edu.cnm.deepdive.tileslide.model.Frame;
@@ -52,6 +40,9 @@ public class FrameAdapter extends ArrayAdapter<Tile> {
   public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
     if (convertView == null) {
       convertView = LayoutInflater.from(getContext()).inflate(R.layout.tile_item, null, false);
+    } else {
+      convertView.setTranslationX(0);
+      convertView.setTranslationY(0);
     }
     Tile tile = getItem(position);
     TileView tileView = convertView.findViewById(R.id.tile_image);
@@ -61,30 +52,13 @@ public class FrameAdapter extends ArrayAdapter<Tile> {
       tileView.setImageBitmap(tileImage);
     } else {
       tileView.setImageBitmap(noTileImage);
+      tileView.setTranslationZ(0);
     }
     return convertView;
   }
 
   @Override
   public void notifyDataSetChanged() {
-
-
-    // TODO Possibly modify this if we want to add animation.
-//    Tile tile = getItem(frame.getLastMove());
-//    TileVi
-//    ObjectAnimator moveX = ObjectAnimator.ofFloat(tileImages, "x", 1);
-//    ObjectAnimator moveY = ObjectAnimator.ofFloat(tileImages, "y", 1 );
-//    AnimatorSet as = new AnimatorSet();
-//    as.playTogether(moveX, moveY);
-//    as.start();
-//    int currentMove = frame.getCurrentMove();
-//    String direction = frame.getMove(currentMove/size, currentMove % size);
-//    Path path = new Path();
-//    path.moveTo();
-////    ValueAnimator pathAnimator = ObjectAnimator.ofFloat(getView(currentMove) , "x", "y", path);
-//    if (frame.getAnimationLastMove() != -1) {
-//      frame.move(frame.getAnimationLastMove() / size, frame.getAnimationLastMove() % size);
-//    }
     copyModelTiles();
     setNotifyOnChange(false);
     clear();
